@@ -36,6 +36,10 @@ class Blowfish:
     def binaryToHex(self, binaryValue):
         return hex(int(str(binaryValue), 2))[2:]
     
+    #Takes in a binary value as a string or int and returns a decimal value as int
+    def binaryToDecimal(self, binaryValue):
+        return int(str(binaryValue), 2)
+    
     #Takes in two strings of hexadecimal values and returns a string of the sum
     def hexAdd(self, hexNum1, hexNum2):
         return self.decimalToHex(self.hexToDecimal(hexNum1)+self.hexToDecimal(hexNum2))
@@ -65,7 +69,42 @@ class Blowfish:
                 sbox.append(sbox_row)
             sBoxes.append(sbox)
         return sBoxes
-
+    
+    #Looks up and returns value at given s box number, row index, and col index
+    def subBoxLookup(self, boxNum, rowIndex, colIndex):
+        return self.__sBoxes[boxNum][rowIndex][colIndex]
+    
+    #Obfuscates message chunk with s box given in s box number (1 to 4) and 32 bit message chunk in hex as string
+    def subBoxObfuscation(self, boxNum, binaryMessageChunk):
+        if len(binaryMessageChunk) > 8:
+            print('Error: Blowfish::subBoxObfuscation given messageChunk too large')
+            return
+            
+        #TODO: May need to deal with if the chunk converts to a binary less than 8 bits (we might need to add leading 0s)
+        
+        xAxis = self.binaryToDecimal(binaryMessageChunk[2:7])
+        yAxis = self.binaryToDecimal(binaryMessageChunk[0:2]+binaryMessageChunk[7:])
+        return self.subBoxLookup(boxNum, xAxis, yAxis)
+    
+    def fFunction(self, messageBlock):
+        cipherText = ''
+        index = 0
+        substitutions = []
+        binaryMessageBlock = self.hexToBinary(messageBlock)
+        
+        if len(binaryMessageBlock) > 32:
+            print('Error: Blowfish::fFunction given messageBlock too large')
+            
+        #TODO: May need to deal with if the chunk converts to a binary less than 8 bits (we might need to add leading 0s)
+        
+        while index < 32:
+            start = index
+            index += 8
+            substitutions.append(self.subBoxObfuscation(int(start/8), binaryMessageBlock[start:index]))
+        
+        
+        return self.hexAdd(substitutions[3], self.decimalToHex(self.hexToDecimal(self.hexAdd(substitutions[0], substitutions[1])) ^ self.hexToDecimal(substitutions[2])))
+            
     #Constructor that takes a string key
     def __init__(self, key):
         self.__numericKey = self.stringToAsciiInt(key)
@@ -76,7 +115,7 @@ class Blowfish:
 # For testing purposes:
 def main():
     test = Blowfish('password')
-    print(test.hexAdd('7','8'))
+    print(test.fFunction('FFFFFFFF'))
 
 if __name__ == '__main__':
     main()
