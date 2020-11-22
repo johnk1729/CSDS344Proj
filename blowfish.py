@@ -7,7 +7,7 @@
 '''
 
 import math
-
+import random
 
 class Blowfish:
     __numericKey = 0
@@ -29,16 +29,39 @@ class Blowfish:
     def createSubKeys(self):
         subKeys = []
         for x in range(18):
-            subKeys.append(hex(abs(int(math.pi*(self.__numericKey ** 1/(x+1)))))[2:10])
+            subKeyValue = ''
+            for y in range(8):
+                subKeyValue += hex(random.randint(0, 15))[2:]
+            subKeys.append(subKeyValue)
         return subKeys
+    
+    def createSBoxes(self):
+        sBoxes = []
+        for x in range(4):
+            sbox = []
+            for y in range(32):
+                sbox_row = []
+                for z in range(8):
+                    sbox_value = ''
+                    for i in range(8):
+                        sbox_value += hex(random.randint(0, 15))[2:]
+                    sbox_row.append(sbox_value)
+                sbox.append(sbox_row)
+            sBoxes.append(sbox)
+        return sBoxes
+    
+    def hexAdd()
+        
 
     def __init__(self, key):
         self.__numericKey = self.stringToAsciiInt(key)
+        random.seed(abs(int(math.pi*(self.__numericKey))))
         self.__subKeys = self.createSubKeys()
+        self.__sBoxes = self.createSBoxes()
 
 # For testing purposes:
 def main():
-    test = Blowfish('password2')
+    test = Blowfish('password')
     print(test.createSubKeys())
 
 if __name__ == '__main__':
