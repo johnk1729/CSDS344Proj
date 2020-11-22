@@ -35,6 +35,10 @@ class Blowfish:
     #Takes in a binary value as a string or int and returns hexadecimal value as string
     def binaryToHex(self, binaryValue):
         return hex(int(str(binaryValue), 2))[2:]
+    
+    #Takes in two strings of hexadecimal values and returns a string of the sum
+    def hexAdd(self, hexNum1, hexNum2):
+        return self.decimalToHex(self.hexToDecimal(hexNum1)+self.hexToDecimal(hexNum2))
 
     #Creates and returns 18 subkeys of 32 bits in hexadecimal based on the numeric key
     def createSubKeys(self):
@@ -61,10 +65,6 @@ class Blowfish:
                 sbox.append(sbox_row)
             sBoxes.append(sbox)
         return sBoxes
-    
-    #Takes in two strings of hexadecimal values and returns a string of the sum
-    def hexAdd(self, hexNum1, hexNum2):
-        return self.decimalToHex(self.hexToDecimal(hexNum1)+self.hexToDecimal(hexNum2))
 
     #Constructor that takes a string key
     def __init__(self, key):
