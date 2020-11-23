@@ -52,8 +52,8 @@ class Blowfish:
     
     
     #Takes in two strings of hexadecimal values and returns a string of the sum
-    def hexAdd(self, hexNum1, hexNum2):
-        return self.decimalToHex(self.hexToDecimal(hexNum1)+self.hexToDecimal(hexNum2))
+    def hexAddLimit2ToThe32(self, hexNum1, hexNum2):
+        return self.decimalToHex((self.hexToDecimal(hexNum1)+self.hexToDecimal(hexNum2))%(2**32))
     
     #TODO: Remove this 
     def getSubKeys(self):
@@ -62,7 +62,7 @@ class Blowfish:
     
     def addLeadingBinaryZeros(self, binaryValue, length):
         value = binaryValue
-        while len(value) != length:
+        while len(value) < length:
             value = '0' + value
         return value
 
@@ -124,13 +124,14 @@ class Blowfish:
         
         if len(binaryMessageBlock) != 32:
             print('Error: Blowfish::fFunction given messageBlock wrong size')
+            return
         
         while index < 32:
             start = index
             index += 8
             substitutions.append(self.subBoxObfuscation(int(start/8), binaryMessageBlock[start:index]))
         
-        return self.hexAdd(substitutions[3], self.decimalToHex(self.hexToDecimal(self.hexAdd(substitutions[0], substitutions[1])) ^ self.hexToDecimal(substitutions[2])))
+        return self.hexAddLimit2ToThe32(substitutions[3], self.decimalToHex(self.hexToDecimal(self.hexAddLimit2ToThe32(substitutions[0], substitutions[1])) ^ self.hexToDecimal(substitutions[2])))
     
     
     #Performs a round of encryption on a hexadecimal 64 bit message as string given corresponding hexadecimal 32 bit subkey as string and returns hexadecimal 64 bit ciphertext as string
@@ -138,15 +139,39 @@ class Blowfish:
         binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 64)
         halfBlockSize = int(len(binaryMessageBlock)/2)
         
-        if len(binaryMessageBlock) > 64:
-            print('Error: Blowfish::fFunction given messageBlock too large')
+        if len(binaryMessageBlock) != 64:
+            print('Error: Blowfish::fFunction given messageBlock wrong size')
+            return
         
         fFunction = self.fFunction(self.decimalToHex(self.hexToDecimal(subKey) ^ self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize])))
-        
         return (self.decimalToHex(self.hexToDecimal(fFunction) ^ self.binaryToDecimal(binaryMessageBlock[halfBlockSize:])) + self.binaryToHex(binaryMessageBlock[0:halfBlockSize]))
     
+    def encryptionPostProcessing(self, messageBlock):
+        binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 64)
+        halfBlockSize = int(len(binaryMessageBlock)/2)
+        
+        return (self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[0])) + self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[1])))
     
-    
+    def encryptPiece(self, messageChunk):
+        message = messageChunk
+        for i in range(len(self.__subKeys)):
+            message = self.encryptionRound(message, self.__subKeys[i])
+        return self.encryptionPostProcessing(message)
+        
+        
+    def encryptMessage(self, message):
+        index = 0
+        plainText = self.decimalToHex(self.stringToAsciiInt(message))
+        cipherText = ''
+        
+        while len(plainText)%16 != 0:
+            plainText = '0' + plainText
+            
+        while index < len(plainText):
+            cipherText += self.encryptPiece(plainText[index:index+16])
+            index += 16
+            
+        return cipherText
     
     #Constructor that takes a string key
     def __init__(self, key):
@@ -158,7 +183,7 @@ class Blowfish:
 # For testing purposes:
 def main():
     test = Blowfish('password')
-    print(test.encryptionRound('FFFFFFFFFFFFFFFF', test.getSubKeys()[0]))
+    print(test.encryptMessage('Hello everybody! This message will be encrypted.'))
 
 if __name__ == '__main__':
     main()
