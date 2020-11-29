@@ -657,7 +657,7 @@ while True:
         print(f"decrypting by blowfish: {to_decrypt} with key {key}")
 
         blowfishDecryptor = blowfish.Blowfish(key)
-        encrypted = blowfishEncryptor.decryptMessage(to_decrypt)
+        encrypted = blowfishDecryptor.decryptMessage(to_decrypt)
         window["blowfish_decrypt_output"].update(encrypted)
 
     if event == "blowfish_encrypt_file_button":
