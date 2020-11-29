@@ -4,7 +4,7 @@ import blowfish
 import os
 import file_to_hex_letters
 import binascii
-import RSA
+import RSA, RSA2
 
 # TODO: Restrict inputs to only valid characters
 
@@ -744,7 +744,7 @@ while True:
 
         try:
             print(f"encrypting by rsa: {to_encrypt} with n={n} and e={e}")
-            encrypted = RSA.encrypt_given_e_n(e, n, to_encrypt)
+            encrypted = RSA2.encrypt(n, e, to_encrypt)
             window["rsa_encrypt_output"].update(encrypted)
         except ValueError as e:
             sg.popup(f"Error:\n{e}")
@@ -773,7 +773,7 @@ while True:
 
         try:
             print(f"encrypting by rsa: {to_decrypt_list} with n={n} and d={d}")
-            decrypted = RSA.decrypt_given_n_d(n, d, to_decrypt_list)
+            decrypted = RSA2.decrypt(n, d, to_decrypt_list)
             window["rsa_decrypt_output"].update(decrypted)
         except ValueError as e:
 
