@@ -197,23 +197,22 @@ class Blowfish:
 
     def decryptPiece(self, messageChunk):
         message = messageChunk
-        for i in range(len(self.__subKeys)):
-            message = self.decryptionRound(message, self.__subKeys[17 - i])
+        for i in range(17, 1, -1):
+            message = self.decryptionRound(message, self.__subKeys[i])
         return self.decryptionPostProcessing(message)
 
 
     def decryptMessage(self, message):
         index = 0
-        cipherText = self.decimalToHex(self.stringToAsciiInt(message))
+        cipherText = message;
         plainText = ''
 
         while len(cipherText)%16 != 0:
             cipherText = '0' + cipherText
 
         while index < len(cipherText):
-            plainText += self.decryptPiece(plainText[index:index+16])
+            plainText += self.decryptPiece(cipherText[index:index+16])
             index += 16
-            print("temp")
 
         return plainText
     
@@ -228,8 +227,9 @@ class Blowfish:
 def main():
     test = Blowfish('password')
     cipherText = test.encryptMessage('Hello World!')
-    #print(cipherText)
-    print(test.decryptMessage(cipherText))
+    print(cipherText)
+    plainText = test.decryptMessage(cipherText)
+    print(plainText)
 
 if __name__ == '__main__':
     main()
