@@ -210,9 +210,10 @@ class Blowfish:
         while len(cipherText)%16 != 0:
             cipherText = '0' + cipherText
 
-        while index < len(plainText):
+        while index < len(cipherText):
             plainText += self.decryptPiece(plainText[index:index+16])
             index += 16
+            print("temp")
 
         return plainText
     
@@ -226,7 +227,9 @@ class Blowfish:
 # For testing purposes:
 def main():
     test = Blowfish('password')
-    print(test.encryptMessage('Hello everybody! This message will be encrypted.'))
+    cipherText = test.encryptMessage('Hello World!')
+    #print(cipherText)
+    print(test.decryptMessage(cipherText))
 
 if __name__ == '__main__':
     main()
