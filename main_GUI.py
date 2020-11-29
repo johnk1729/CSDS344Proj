@@ -99,6 +99,7 @@ vigenere_decrypt_tab = [
         sg.Button("Decrypt", key="vigenere_decrypt_button"),
     ]
 ]
+
 blowfish_encrypt_tab = [
     [
         sg.Column(
@@ -144,6 +145,7 @@ blowfish_encrypt_tab = [
         sg.Button("Encrypt", key="blowfish_encrypt_button"),
     ]
 ]
+
 blowfish_decrypt_tab = [
     [
         sg.Column(
@@ -191,7 +193,7 @@ blowfish_decrypt_tab = [
 ]
 
 
-rsa_encrypt_tab = [
+rsa_keygen_tab = [
     [
         sg.Column(
             [
@@ -200,7 +202,7 @@ rsa_encrypt_tab = [
                     sg.Multiline(
                         "",
                         size=(25, 5),
-                        key="rsa_encrypt_p",
+                        key="rsa_keygen_p",
                         visible=True,
                     )
                 ],
@@ -213,7 +215,82 @@ rsa_encrypt_tab = [
                     sg.Multiline(
                         "",
                         size=(25, 5),
-                        key="rsa_encrypt_q",
+                        key="rsa_keygen_q",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text("Modulus (N):")],
+                [
+                    sg.Multiline(
+                        "(output will appear here)",
+                        size=(10, 5),
+                        key="rsa_keygen_output_n",
+                        visible=True,
+                        disabled=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text("Public Exponent (E):")],
+                [
+                    sg.Multiline(
+                        "(output will appear here)",
+                        size=(10, 5),
+                        key="rsa_keygen_output_e",
+                        visible=True,
+                        disabled=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text("Private Exponent (D):")],
+                [
+                    sg.Multiline(
+                        "(output will appear here)",
+                        size=(10, 5),
+                        key="rsa_keygen_output_d",
+                        visible=True,
+                        disabled=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Button("Generate Keys", key="rsa_keygen_button"),
+    ]
+]
+
+
+rsa_encrypt_tab = [
+    [
+        sg.Column(
+            [
+                [sg.T("Public Exponent (E):")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(10, 5),
+                        key="rsa_encrypt_e",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Modulus (N):")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(10, 5),
+                        key="rsa_encrypt_n",
                         visible=True,
                     )
                 ],
@@ -255,12 +332,12 @@ rsa_decrypt_tab = [
     [
         sg.Column(
             [
-                [sg.T("P:")],
+                [sg.T("Private Exponent (D):")],
                 [
                     sg.Multiline(
                         "",
-                        size=(25, 5),
-                        key="rsa_decrypt_p",
+                        size=(10, 5),
+                        key="rsa_decrypt_d",
                         visible=True,
                     )
                 ],
@@ -268,12 +345,12 @@ rsa_decrypt_tab = [
         ),
         sg.Column(
             [
-                [sg.T("Q:")],
+                [sg.T("Modulus (N):")],
                 [
                     sg.Multiline(
                         "",
-                        size=(25, 5),
-                        key="rsa_decrypt_q",
+                        size=(10, 5),
+                        key="rsa_decrypt_n",
                         visible=True,
                     )
                 ],
@@ -281,7 +358,7 @@ rsa_decrypt_tab = [
         ),
         sg.Column(
             [
-                [sg.T("To decrypt (space-delimited list of ASCII encodings):")],
+                [sg.T("To decrypt (space-delimited list of int encodings):")],
                 [
                     sg.Multiline(
                         "",
@@ -340,7 +417,8 @@ vigenere_encrypt_file_tab = [
         ),
         sg.Column(
             [
-                [sg.Text(f"Encrypted file will be in the same folder with 've' appended to the extension.", key="vigenere_encrypt_file_output_message")],
+                [sg.Text(f"NOTE: Blowfish file encryption is slow and should only be used with very small files.\nEncrypted file will be in the same folder with 've' appended to the extension.",  size=(30,5), key="vigenere_encrypt_file_output_message")],
+
             ]
         ),
         sg.Button("Encrypt", key="vigenere_encrypt_file_button"),
@@ -374,7 +452,7 @@ vigenere_decrypt_file_tab = [
         ),
         sg.Column(
             [
-                [sg.Text(f"Decrypted file will be in the same folder with 've' removed from the extension (so they will have the original extension).", key="vigenere_decrypt_file_output_message")],
+                [sg.Text(f"Decrypted file will be in the same folder with 've' removed from the extension (so they will have the original extension).", size=(30,5), key="vigenere_decrypt_file_output_message")],
             ]
         ),
         sg.Button("Decrypt", key="vigenere_decrypt_file_button"),
@@ -408,7 +486,7 @@ blowfish_encrypt_file_tab = [
         ),
         sg.Column(
             [
-                [sg.Text(f"Encrypted file will be in the same folder with 'be' appended to the extension.", key="blowfish_encrypt_file_output_message")],
+                [sg.Text(f"Encrypted file will be in the same folder with 'be' appended to the extension.",  size=(30,5), key="blowfish_encrypt_file_output_message")],
             ]
         ),
         sg.Button("Encrypt", key="blowfish_encrypt_file_button"),
@@ -442,7 +520,7 @@ blowfish_decrypt_file_tab = [
         ),
         sg.Column(
             [
-                [sg.Text(f"Decrypted file will be in the same folder with 'be' removed from the extension (so they will have the original extension).", key="blowfish_decrypt_file_output_message")],
+                [sg.Text(f"Decrypted file will be in the same folder with 'be' removed from the extension (so they will have the original extension).",  size=(30,5), key="blowfish_decrypt_file_output_message")],
             ]
         ),
         sg.Button("Decrypt", key="blowfish_decrypt_file_button"),
@@ -467,7 +545,9 @@ layout = [
                         sg.Tab("Blowfish Decrypt", blowfish_decrypt_tab),
 
                         sg.Tab("Blowfish Encrypt (file)", blowfish_encrypt_file_tab),
+                        sg.Tab("Blowfish Decrypt (file)", blowfish_decrypt_file_tab),
 
+                        sg.Tab("RSA Keygen", rsa_keygen_tab),
                         sg.Tab("RSA Encrypt", rsa_encrypt_tab),
                         sg.Tab("RSA Decrypt", rsa_decrypt_tab),
                     ]
@@ -579,7 +659,6 @@ while True:
 
     if event == "blowfish_encrypt_file_button":
         # Capitalize input for key
-        values_dict['blowfish_encrypt_file_key'] = values_dict['blowfish_encrypt_file_key'].upper()
         key = values_dict['blowfish_encrypt_file_key'].strip('\n')
         window["blowfish_encrypt_file_key"].update(key)
 
@@ -599,7 +678,6 @@ while True:
 
     if event == "blowfish_decrypt_file_button":
         # Capitalize input for key
-        values_dict['blowfish_decrypt_file_key'] = values_dict['blowfish_decrypt_file_key'].upper()
         key = values_dict['blowfish_decrypt_file_key'].strip('\n')
         window["blowfish_decrypt_file_key"].update(key)
 
@@ -624,10 +702,9 @@ while True:
         sg.popup(f"Success! Decrypted file saved as {tail[:-2]} in {head}")
         pass
 
-    if event == "rsa_encrypt_button":
-        to_encrypt = values_dict['rsa_encrypt_input'].strip('\n')
-        p = values_dict['rsa_encrypt_p'].strip('\n')
-        q = values_dict['rsa_encrypt_q'].strip('\n')
+    if event == "rsa_keygen_button":
+        p = values_dict['rsa_keygen_p'].strip('\n')
+        q = values_dict['rsa_keygen_q'].strip('\n')
 
 
         if not p.isdigit():
@@ -635,20 +712,39 @@ while True:
             continue
         p = int(p)
         if not q.isdigit():
-            sg.popup("Q should be an integer.")
+            sg.popup("P should be a (prime) number.")
             continue
         q = int(q)
 
         try:
-            print(f"encrypting by rsa: {to_encrypt} with p={p} and q={q}")
-            encrypted = RSA.encrypt(p, q, to_encrypt)
-            window["rsa_encrypt_output"].update(encrypted)
+            keys = RSA.generateKeys(p, q)
+            window["rsa_keygen_output_e"].update(keys['public exponent'])
+            window["rsa_keygen_output_d"].update(keys['private exponent'])
+            window["rsa_keygen_output_n"].update(keys['modulus'])
         except ValueError as e:
-
-            sg.popup("Confirm you have used prime inputs")
+            sg.popup(e)
             continue
 
-            sg.popup(f"Error: {e.message}")
+    if event == "rsa_encrypt_button":
+        to_encrypt = values_dict['rsa_encrypt_input'].strip('\n')
+        e = values_dict['rsa_encrypt_e'].strip('\n')
+        n = values_dict['rsa_encrypt_n'].strip('\n')
+
+        if not n.isdigit():
+            sg.popup("N should be an integer")
+            continue
+        n = int(n)
+        if not e.isdigit():
+            sg.popup("E should be an integer")
+            continue
+        e = int(e)
+
+        try:
+            print(f"encrypting by rsa: {to_encrypt} with n={n} and e={e}")
+            encrypted = RSA.encrypt_given_e_n(e, n, to_encrypt)
+            window["rsa_encrypt_output"].update(encrypted)
+        except ValueError as e:
+            sg.popup(f"Error:\n{e}")
             continue
 
     if event == "rsa_decrypt_button":
@@ -660,21 +756,21 @@ while True:
             sg.popup("Invalid input")
             continue
 
-        p = values_dict['rsa_encrypt_p'].strip('\n')
-        q = values_dict['rsa_encrypt_q'].strip('\n')
+        n = values_dict['rsa_decrypt_n'].strip('\n')
+        d = values_dict['rsa_decrypt_d'].strip('\n')
 
-        if not p.isdigit():
-            sg.popup("P should be a (prime) number.")
+        if not n.isdigit():
+            sg.popup("N should be an integer")
             continue
-        p = int(p)
-        if not q.isdigit():
-            sg.popup("Q should be an integer.")
+        n = int(n)
+        if not d.isdigit():
+            sg.popup("D should be an integer")
             continue
-        q = int(q)
+        d = int(d)
 
         try:
-            print(f"encrypting by rsa: {to_decrypt_list} with p={p} and q={q}")
-            decrypted = RSA.decrypt(p, q, to_decrypt_list)
+            print(f"encrypting by rsa: {to_decrypt_list} with n={n} and d={d}")
+            decrypted = RSA.decrypt_given_n_d(n, d, to_decrypt_list)
             window["rsa_decrypt_output"].update(decrypted)
         except ValueError as e:
 

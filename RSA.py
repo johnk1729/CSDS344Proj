@@ -35,6 +35,10 @@ def ASCIItoPlainText(encoding):
 ## input p and q should be prime numbers
 def generateKeys(p, q):
 
+    if (256 > p*q):
+        raise ValueError("p and q are too small, please choose larger p and q values")
+
+
     ## check if p and q are prime
     if not isPrime(p):
         raise ValueError("Input must be prime and " + str(p) + " is not prime.")
@@ -84,6 +88,21 @@ def encrypt(p, q, plaintext):
 
     return ciphertext
 
+
+## encrypt a message using a publc key (N,E)
+## message must be smaller than N
+def encrypt_given_e_n(E, N, plaintext):
+
+    ## get ASCII encoding of plain text
+    encoding = plaintextToASCII(plaintext)
+
+    ## generate ciphertext
+    ciphertext = []
+    for i in range(len(encoding)):
+        ciphertext.append((encoding[i]**E) % N)
+
+    return ciphertext
+
 # decrypt a message using a private key (N,D)
 def decrypt(p, q, ciphertext):
 
@@ -91,6 +110,17 @@ def decrypt(p, q, ciphertext):
     keys = generateKeys(p,q)
     D = keys['private exponent']
     N = keys['modulus']
+
+    ## decrypt ciphertext to ASCII encoding
+    message = []
+    for i in range(len(ciphertext)):
+        message.append((ciphertext[i]**D) % N)
+
+    return ASCIItoPlainText(message)
+
+
+# decrypt a message using a private key (N,D)
+def decrypt_given_n_d(N, D, ciphertext):
 
     ## decrypt ciphertext to ASCII encoding
     message = []

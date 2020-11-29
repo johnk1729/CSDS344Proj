@@ -81,6 +81,9 @@ def string_to_file(string, filename):
 def file_to_string(filename):
     return pickle.load(open(filename, "rb"))
 
+def base64_to_file(base64_string, file):
+    data = open(file_path, "rb").read()
+
 '''
 hex_letters_str = convert_to_hex_letters("vigenere.py")
 enc_hex_letters_str = vigenere.vigenereEncipher(hex_letters_str, "ABCDEFGHIJKLMNOP")
