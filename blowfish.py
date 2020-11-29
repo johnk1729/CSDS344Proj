@@ -173,6 +173,49 @@ class Blowfish:
             
         return cipherText
     
+        #Performs a round of decryption on a hexadecimal 64 bit message as string given corresponding hexadecimal 32 bit subkey as string and returns hexadecimal 64 bit plaintext as string
+    def decryptionRound(self, messageBlock, subKey):
+        binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 64)
+        halfBlockSize = int(len(binaryMessageBlock)/2)
+
+        if len(binaryMessageBlock) > 64:
+            print('Error: Blowfish::fFunction given messageBlock too large')
+        if len(binaryMessageBlock) != 64:
+            print('Error: Blowfish::fFunction given messageBlock wrong size')
+            return
+
+        fFunction = self.fFunction(self.decimalToHex(self.hexToDecimal(subKey) ^ self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize])))
+
+        return (self.decimalToHex(self.hexToDecimal(fFunction) ^ self.binaryToDecimal(binaryMessageBlock[halfBlockSize:])) + self.binaryToHex(binaryMessageBlock[0:halfBlockSize]))
+
+    def decryptionPostProcessing(self, messageBlock):
+        binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 64)
+        halfBlockSize = int(len(binaryMessageBlock)/2)
+
+        return (self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[0])) + self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[1])))
+
+
+    def decryptPiece(self, messageChunk):
+        message = messageChunk
+        for i in range(len(self.__subKeys)):
+            message = self.decryptionRound(message, self.__subKeys[17 - i])
+        return self.decryptionPostProcessing(message)
+
+
+    def decryptMessage(self, message):
+        index = 0
+        cipherText = self.decimalToHex(self.stringToAsciiInt(message))
+        plainText = ''
+
+        while len(cipherText)%16 != 0:
+            cipherText = '0' + cipherText
+
+        while index < len(plainText):
+            plainText += self.decryptPiece(plainText[index:index+16])
+            index += 16
+
+        return plainText
+    
     #Constructor that takes a string key
     def __init__(self, key):
         self.__numericKey = self.stringToAsciiInt(key)
