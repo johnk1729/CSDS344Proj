@@ -655,7 +655,10 @@ while True:
         to_decrypt = values_dict['blowfish_decrypt_input'].strip('\n')
         key = values_dict['blowfish_decrypt_key'].strip('\n')
         print(f"decrypting by blowfish: {to_decrypt} with key {key}")
-        window["blowfish_decrypt_output"].update(f"%{to_decrypt}X{key}")
+
+        blowfishDecryptor = blowfish.Blowfish(key)
+        encrypted = blowfishEncryptor.decryptMessage(to_decrypt)
+        window["blowfish_decrypt_output"].update(encrypted)
 
     if event == "blowfish_encrypt_file_button":
         # Capitalize input for key
