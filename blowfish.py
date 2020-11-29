@@ -213,8 +213,12 @@ class Blowfish:
         while index < len(cipherText):
             plainText += self.decryptPiece(cipherText[index:index+16])
             index += 16
-
-        return plainText
+        plainText = self.hexToDecimal(plainText)
+        length = len(str(plainText));
+        plain = ''
+        for x in range(length):
+            plain += chr(int((str(plainText)[x])))        
+        return plain
     
     #Constructor that takes a string key
     def __init__(self, key):
