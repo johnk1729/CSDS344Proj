@@ -101,16 +101,20 @@ def decrypt(p, q, ciphertext):
 
 
 
+# For testing purposes:
+def main():
+    ## example of functionality
+    ## todo: set an example P,Q, and message
+    EXAMPLE_P = 5
+    EXAMPLE_Q = 97
+    EXAMPLE_MESSAGE = "Hello World"
 
-## example of functionality
-## todo: set an example P,Q, and message
-EXAMPLE_P = 5
-EXAMPLE_Q = 97
-EXAMPLE_MESSAGE = "Hello World"
+    EXAMPLE_CIPHERTEXT = encrypt(EXAMPLE_P, EXAMPLE_Q, EXAMPLE_MESSAGE)
+    EXAMPLE_DECRYPTED_MESSAGE = decrypt(EXAMPLE_P, EXAMPLE_Q, EXAMPLE_CIPHERTEXT)
+    print("message is: " + EXAMPLE_MESSAGE)
+    print("ASCII encoding of " + EXAMPLE_MESSAGE + " is: " + str(plaintextToASCII(EXAMPLE_MESSAGE)))
+    print("ciphertext is: " + str(EXAMPLE_CIPHERTEXT))
+    print("decrypted message is " + EXAMPLE_DECRYPTED_MESSAGE)
 
-EXAMPLE_CIPHERTEXT = encrypt(EXAMPLE_P, EXAMPLE_Q, EXAMPLE_MESSAGE)
-EXAMPLE_DECRYPTED_MESSAGE = decrypt(EXAMPLE_P, EXAMPLE_Q, EXAMPLE_CIPHERTEXT)
-print("message is: " + EXAMPLE_MESSAGE)
-print("ASCII encoding of " + EXAMPLE_MESSAGE + " is: " + str(plaintextToASCII(EXAMPLE_MESSAGE)))
-print("ciphertext is: " + str(EXAMPLE_CIPHERTEXT))
-print("decrypted message is " + EXAMPLE_DECRYPTED_MESSAGE)
+if __name__ == '__main__':
+    main()

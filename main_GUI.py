@@ -4,7 +4,7 @@ import blowfish
 import os
 import file_to_hex_letters
 import binascii
-
+import RSA
 
 # TODO: Restrict inputs to only valid characters
 
@@ -191,6 +191,125 @@ blowfish_decrypt_tab = [
 ]
 
 
+rsa_encrypt_tab = [
+    [
+        sg.Column(
+            [
+                [sg.T("P:")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(25, 5),
+                        key="rsa_encrypt_p",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Q:")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(25, 5),
+                        key="rsa_encrypt_q",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("To encrypt:")],
+                [
+                    sg.Multiline(
+                        "(input text goes here)",
+                        size=(45, 5),
+                        key="rsa_encrypt_input",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text("Encrypted:")],
+                [
+                    sg.Multiline(
+                        "(output will appear here)",
+                        size=(45, 5),
+                        key="rsa_encrypt_output",
+                        visible=True,
+                        disabled=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Button("Encrypt", key="rsa_encrypt_button"),
+    ]
+]
+
+
+rsa_decrypt_tab = [
+    [
+        sg.Column(
+            [
+                [sg.T("P:")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(25, 5),
+                        key="rsa_decrypt_p",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Q:")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(25, 5),
+                        key="rsa_decrypt_q",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("To decrypt (space-delimited list of ASCII encodings):")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(45, 5),
+                        key="rsa_decrypt_input",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text("Decrypted:")],
+                [
+                    sg.Multiline(
+                        "(output will appear here)",
+                        size=(45, 5),
+                        key="rsa_decrypt_output",
+                        visible=True,
+                        disabled=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Button("Decrypt", key="rsa_decrypt_button"),
+    ]
+]
+
 
 
 
@@ -228,6 +347,108 @@ vigenere_encrypt_file_tab = [
     ]
 ]
 
+vigenere_decrypt_file_tab = [
+    [
+        sg.Column(
+            [
+                [sg.T("File to encrypt:")],
+
+                [
+                    sg.InputText(key="vigenere_decrypt_file_path"),
+                    sg.FileBrowse(key="vigenere_decrypt_file_selector", enable_events=True)
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Key:")],
+                [
+                    sg.Multiline(
+                        "(key text goes here)",
+                        size=(45, 5),
+                        key="vigenere_decrypt_file_key",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text(f"Decrypted file will be in the same folder with 've' removed from the extension (so they will have the original extension).", key="vigenere_decrypt_file_output_message")],
+            ]
+        ),
+        sg.Button("Decrypt", key="vigenere_decrypt_file_button"),
+    ]
+]
+
+blowfish_encrypt_file_tab = [
+    [
+        sg.Column(
+            [
+                [sg.T("File to encrypt:")],
+
+                [
+                    sg.InputText(key="blowfish_encrypt_file_path"),
+                    sg.FileBrowse(key="blowfish_encrypt_file_selector", enable_events=True)
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Key:")],
+                [
+                    sg.Multiline(
+                        "(key text goes here)",
+                        size=(45, 5),
+                        key="blowfish_encrypt_file_key",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text(f"Encrypted file will be in the same folder with 'be' appended to the extension.", key="blowfish_encrypt_file_output_message")],
+            ]
+        ),
+        sg.Button("Encrypt", key="blowfish_encrypt_file_button"),
+    ]
+]
+
+blowfish_decrypt_file_tab = [
+    [
+        sg.Column(
+            [
+                [sg.T("File to encrypt:")],
+
+                [
+                    sg.InputText(key="blowfish_decrypt_file_path"),
+                    sg.FileBrowse(key="blowfish_decrypt_file_selector", enable_events=True)
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Key:")],
+                [
+                    sg.Multiline(
+                        "(key text goes here)",
+                        size=(45, 5),
+                        key="blowfish_decrypt_file_key",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text(f"Decrypted file will be in the same folder with 'be' removed from the extension (so they will have the original extension).", key="blowfish_decrypt_file_output_message")],
+            ]
+        ),
+        sg.Button("Decrypt", key="blowfish_decrypt_file_button"),
+    ]
+]
+
 
 
 
@@ -240,9 +461,15 @@ layout = [
                         sg.Tab("Vigenere Decrypt", vigenere_decrypt_tab),
 
                         sg.Tab("Vigenere Encrypt (file)", vigenere_encrypt_file_tab),
+                        sg.Tab("Vigenere Decrypt (file)", vigenere_decrypt_file_tab),
 
                         sg.Tab("Blowfish Encrypt", blowfish_encrypt_tab),
                         sg.Tab("Blowfish Decrypt", blowfish_decrypt_tab),
+
+                        sg.Tab("Blowfish Encrypt (file)", blowfish_encrypt_file_tab),
+
+                        sg.Tab("RSA Encrypt", rsa_encrypt_tab),
+                        sg.Tab("RSA Decrypt", rsa_decrypt_tab),
                     ]
                 ]),
 
@@ -297,36 +524,41 @@ while True:
         file_path = window["vigenere_encrypt_file_path"].get()
         if len(file_path) < 1:
             sg.popup("Select a file to encrypt first.")
-            continue # TODO: test that this continue does what we want
+            continue
 
-        file_encrypted_hex_letters = vigenere.vigenereEncrypt(file_to_hex_letters.convert_to_hex_letters(file_path, file_path + "ve"), key)
+        file_encrypted_hex_letters = vigenere.vigenereEncrypt(file_to_hex_letters.convert_to_hex_letters(file_path), key)
 
-        #with open(file_path + "ve", "wb") as f_out:
-        #    f_out.write(
-        #        binascii.unhexlify(file_encrypted_hex_letters)
-        #    )
-
-        #file_to_hex_letters.convert_letters_string_to_regular_file(file_encrypted_hex_letters, file_path + "ve")
+        file_to_hex_letters.string_to_file(file_encrypted_hex_letters,  file_path + "ve")
 
         head, tail = os.path.split(file_path)
-        sg.popup(f"Success! File saved as {head}ve in {tail}")
+        sg.popup(f"Success! Encrypted file saved as {tail}ve in {head}")
 
-        sg.popup(f"trying to decrypt JUST FOR TESTING ***")
 
-        sg.popup(f"Success! File saved as {head}ve in {tail}")
+    if event == "vigenere_decrypt_file_button":
+        # Capitalize input for key
+        values_dict['vigenere_decrypt_file_key'] = values_dict['vigenere_decrypt_file_key'].upper()
+        key = values_dict['vigenere_decrypt_file_key'].strip('\n')
+        window["vigenere_decrypt_file_key"].update(key)
 
-        decrypted_hex_letters = vigenere.vigenereDecrypt(file_to_hex_letters.open_encrypted_file_as_letters_string(file_path + "ve"), key)
-        file_to_hex_letters.convert_letters_string_to_regular_file(decrypted_hex_letters, file_path + "veun")
+        file_path = window["vigenere_decrypt_file_path"].get()
+        if len(file_path) < 1:
+            sg.popup("Select a file to decrypt first.")
+            continue
 
-    ''' event doesn't trigger?
-    if event == "vigenere_encrypt_file_selector":
-        print(window)
+        if file_path[-2:] != "ve":
+            sg.popup("Please select a Vigenere encrypted file with 've' at the end of it's extension.")
+            continue
 
-        file_path = window["vigenere_encrypt_file_path"]
+        encrypted_letters_string = file_to_hex_letters.file_to_string(file_path)
+        decrypted_hex_letters = vigenere.vigenereDecrypt(encrypted_letters_string, key)
+        try:
+            file_to_hex_letters.convert_letters_string_to_regular_file(decrypted_hex_letters, file_path[:-2])
+        except binascii.Error:
+            sg.popup("Incorrect key for file.")
+
         head, tail = os.path.split(file_path)
-
-        window["vigenere_encrypt_file_output_message"].update(f"Encrypted file will be saved in same folder as {head}ve")
-    '''
+        sg.popup(f"Success! Decrypted file saved as {tail[:-2]} in {head}")
+        pass
 
 
     if event == "blowfish_encrypt_button":
@@ -344,6 +576,110 @@ while True:
         key = values_dict['blowfish_decrypt_key'].strip('\n')
         print(f"decrypting by blowfish: {to_decrypt} with key {key}")
         window["blowfish_decrypt_output"].update(f"%{to_decrypt}X{key}")
+
+    if event == "blowfish_encrypt_file_button":
+        # Capitalize input for key
+        values_dict['blowfish_encrypt_file_key'] = values_dict['blowfish_encrypt_file_key'].upper()
+        key = values_dict['blowfish_encrypt_file_key'].strip('\n')
+        window["blowfish_encrypt_file_key"].update(key)
+
+        file_path = window["blowfish_encrypt_file_path"].get()
+        if len(file_path) < 1:
+            sg.popup("Select a file to encrypt first.")
+            continue
+
+        blowfishEncryptor = blowfish.Blowfish(key)
+        file_encrypted_hex_letters = blowfishEncryptor.encryptMessage(file_to_hex_letters.convert_to_hex_letters(file_path))
+
+        file_to_hex_letters.string_to_file(file_encrypted_hex_letters,  file_path + "be")
+
+        head, tail = os.path.split(file_path)
+        sg.popup(f"Success! Encrypted file saved as {tail}be in {head}")
+
+
+    if event == "blowfish_decrypt_file_button":
+        # Capitalize input for key
+        values_dict['blowfish_decrypt_file_key'] = values_dict['blowfish_decrypt_file_key'].upper()
+        key = values_dict['blowfish_decrypt_file_key'].strip('\n')
+        window["blowfish_decrypt_file_key"].update(key)
+
+        file_path = window["blowfish_decrypt_file_path"].get()
+        if len(file_path) < 1:
+            sg.popup("Select a file to decrypt first.")
+            continue
+
+        if file_path[-2:] != "ve":
+            sg.popup("Please select a blowfish encrypted file with 'be' at the end of it's extension.")
+            continue
+
+        encrypted_letters_string = file_to_hex_letters.file_to_string(file_path)
+        decryptor = blowfish.Blowfish(key)
+        decrypted_hex_letters = blowfish.decryptMessage(encrypted_letters_string)
+        try:
+            file_to_hex_letters.convert_letters_string_to_regular_file(decrypted_hex_letters, file_path[:-2])
+        except binascii.Error:
+            sg.popup("Incorrect key for file.")
+
+        head, tail = os.path.split(file_path)
+        sg.popup(f"Success! Decrypted file saved as {tail[:-2]} in {head}")
+        pass
+
+    if event == "rsa_encrypt_button":
+        to_encrypt = values_dict['rsa_encrypt_input'].strip('\n')
+        p = values_dict['rsa_encrypt_p'].strip('\n')
+        q = values_dict['rsa_encrypt_q'].strip('\n')
+
+
+        if not p.isdigit():
+            sg.popup("P should be a (prime) number.")
+            continue
+        p = int(p)
+        if not q.isdigit():
+            sg.popup("Q should be an integer.")
+            continue
+        q = int(q)
+
+        try:
+            print(f"encrypting by rsa: {to_encrypt} with p={p} and q={q}")
+            encrypted = RSA.encrypt(p, q, to_encrypt)
+            window["rsa_encrypt_output"].update(encrypted)
+        except ValueError as e:
+
+            sg.popup("Confirm you have used prime inputs")
+            continue
+
+            sg.popup(f"Error: {e.message}")
+            continue
+
+    if event == "rsa_decrypt_button":
+        to_decrypt = values_dict['rsa_decrypt_input'].strip('\n')
+
+        try:
+            to_decrypt_list = [int(enc) for enc in to_decrypt.split(" ")]
+        except:
+            sg.popup("Invalid input")
+            continue
+
+        p = values_dict['rsa_encrypt_p'].strip('\n')
+        q = values_dict['rsa_encrypt_q'].strip('\n')
+
+        if not p.isdigit():
+            sg.popup("P should be a (prime) number.")
+            continue
+        p = int(p)
+        if not q.isdigit():
+            sg.popup("Q should be an integer.")
+            continue
+        q = int(q)
+
+        try:
+            print(f"encrypting by rsa: {to_decrypt_list} with p={p} and q={q}")
+            decrypted = RSA.decrypt(p, q, to_decrypt_list)
+            window["rsa_decrypt_output"].update(decrypted)
+        except ValueError as e:
+
+            sg.popup("Confirm you have used prime inputs")
+            continue
 
 
 window.close()

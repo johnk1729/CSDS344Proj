@@ -1,5 +1,6 @@
 import binascii
 import vigenere
+import pickle
 # This is an inefficient but functional way of converting any file into a set of all caps letters (compatible with our
 # encryption algorithms) and back again. It should satisfy the requirement about images.
 
@@ -31,9 +32,9 @@ def convert_to_hex_letters(input_filename, output_filename = None):
     translator = hex_string.maketrans(hex_normal_to_letters_map)
     letters_only_hex = hex_string.translate(translator)
 
-    if output_filename != None:
-        with open(output_filename, "wb") as f_out:
-            f_out.write(bytes(letters_only_hex, encoding="UTF8"))
+    #if output_filename != None:
+    #    with open(output_filename, "wb") as f_out:
+    #        f_out.write(bytes(letters_only_hex, encoding="UTF8"))
 
 
     return letters_only_hex
@@ -63,16 +64,22 @@ def convert_letters_string_to_regular_file(letters_string, output_filename):
     normal_hex = letters_string.translate(translator)
     print(normal_hex)
 
+    unhexified = binascii.unhexlify(normal_hex)
     with open(output_filename, "wb") as f_out:
         f_out.write(
-            binascii.unhexlify(letters_only_hex)
+            unhexified
         )
-
 
 def open_encrypted_file_as_letters_string(filename): # TODO: somethign wrong is happening here...
     with open(filename, "r", encoding="UTF8") as f_in:
-        return str(f_in.read())[2:-1]
+        return str(f_in.read())
 
+
+def string_to_file(string, filename):
+    pickle.dump(string, open(filename, "wb"))
+
+def file_to_string(filename):
+    return pickle.load(open(filename, "rb"))
 
 '''
 hex_letters_str = convert_to_hex_letters("vigenere.py")
