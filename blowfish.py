@@ -130,8 +130,10 @@ class Blowfish:
             start = index
             index += 8
             substitutions.append(self.subBoxObfuscation(int(start/8), binaryMessageBlock[start:index]))
-        
-        return self.hexAddLimit2ToThe32(substitutions[3], self.decimalToHex(self.hexToDecimal(self.hexAddLimit2ToThe32(substitutions[0], substitutions[1])) ^ self.hexToDecimal(substitutions[2])))
+        firstAdd = self.hexAddLimit2ToThe32(substitutions[0], substitutions[1])
+        xor = self.hexToDecimal(firstAdd) ^ self.hexToDecimal(substitutions[2])
+        secondAdd = self.hexAddLimit2ToThe32(substitutions[3], self.decimalToHex(xor))
+        return secondAdd
     
     
     #Performs a round of encryption on a hexadecimal 64 bit message as string given corresponding hexadecimal 32 bit subkey as string and returns hexadecimal 64 bit ciphertext as string
@@ -185,14 +187,18 @@ class Blowfish:
             return
 
         fFunction = self.fFunction(self.decimalToHex(self.hexToDecimal(subKey) ^ self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize])))
+        left = self.decimalToHex(self.hexToDecimal(fFunction) ^ self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]))
+        right = self.binaryToHex(binaryMessageBlock[0:halfBlockSize])
 
-        return (self.decimalToHex(self.hexToDecimal(fFunction) ^ self.binaryToDecimal(binaryMessageBlock[halfBlockSize:])) + self.binaryToHex(binaryMessageBlock[0:halfBlockSize]))
+        return (left + right)
 
     def decryptionPostProcessing(self, messageBlock):
         binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 64)
         halfBlockSize = int(len(binaryMessageBlock)/2)
+        left = self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[0]))
+        right = self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[1]))
 
-        return (self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[0])) + self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[1])))
+        return (left + right)
 
 
     def decryptPiece(self, messageChunk):
@@ -200,6 +206,7 @@ class Blowfish:
         for i in range(17, 1, -1):
             message = self.decryptionRound(message, self.__subKeys[i])
         return self.decryptionPostProcessing(message)
+        
 
 
     def decryptMessage(self, message):
@@ -213,12 +220,7 @@ class Blowfish:
         while index < len(cipherText):
             plainText += self.decryptPiece(cipherText[index:index+16])
             index += 16
-        plainText = self.hexToDecimal(plainText)
-        length = len(str(plainText));
-        plain = ''
-        for x in range(length):
-            plain += chr(int((str(plainText)[x])))        
-        return plain
+        return plainText;
     
     #Constructor that takes a string key
     def __init__(self, key):
@@ -229,8 +231,8 @@ class Blowfish:
 
 # For testing purposes:
 def main():
-    test = Blowfish('password')
-    cipherText = test.encryptMessage('Hello World!')
+    test = Blowfish('12345')
+    cipherText = test.encryptMessage('12345')
     print(cipherText)
     plainText = test.decryptMessage(cipherText)
     print(plainText)
