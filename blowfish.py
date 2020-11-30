@@ -152,7 +152,7 @@ class Blowfish:
         binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 64)
         halfBlockSize = int(len(binaryMessageBlock)/2)
         
-        return (self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[0])) + self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[1])))
+        return (self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[16])) + self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[17])))
     
     def encryptPiece(self, messageChunk):
         message = messageChunk
@@ -232,7 +232,7 @@ class Blowfish:
 # For testing purposes:
 def main():
     test = Blowfish('12345')
-    cipherText = test.encryptMessage('12345')
+    cipherText = test.encryptMessage('1a2345')
     print(cipherText)
     plainText = test.decryptMessage(cipherText)
     print(plainText)
