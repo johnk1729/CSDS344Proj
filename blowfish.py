@@ -107,8 +107,6 @@ class Blowfish:
         if len(binaryMessageChunk) != 8:
             print('Error: Blowfish::subBoxObfuscation given messageChunk wrong size')
             return
-            
-        
         
         xAxis = self.binaryToDecimal(binaryMessageChunk[2:7])
         yAxis = self.binaryToDecimal(binaryMessageChunk[0:2]+binaryMessageChunk[7:])
@@ -123,11 +121,11 @@ class Blowfish:
         for x in range (len(self.__sBoxes[0])):
             for y in range (len(self.__sBoxes[0][0])):
                 if self.__sBoxes[boxNum][x][y] == binaryMessageChunk:
-                     rowIndex = str(self.addLeadingBinaryZeros(self.decimalToBinary(x), 3))
-                     colIndex = str(self.addLeadingBinaryZeros(self.decimalToBinary(y), 5))
-        rObfuscated+=rowIndex[0:2]
-        rObfuscated+=colIndex
-        rObfuscated+=rowIndex[3:]
+                     rowIndex = str(self.addLeadingBinaryZeros(self.decimalToBinary(x), 5))
+                     colIndex = str(self.addLeadingBinaryZeros(self.decimalToBinary(y), 3))
+        rObfuscated+=colIndex[0:2]
+        rObfuscated+=rowIndex
+        rObfuscated+=colIndex[2:]
         return rObfuscated
     
     
@@ -270,13 +268,14 @@ class Blowfish:
 # For testing purposes:
 def main():
     test = Blowfish('12345')
-    ob = test.subBoxObfuscation(2, "10010110")
-    print(ob)
-    print((test.reverseObfuscate(2, ob)))
-    #cipherText = test.encryptMessage('1a2345')
-    #print(cipherText)
-    #plainText = test.decryptMessage(cipherText)
-    #print(plainText)
+    #ob = test.subBoxObfuscation(2, "10010110")
+    #print('10010110')
+    #print(ob)
+    #print((test.reverseObfuscate(2, ob)))
+    cipherText = test.encryptMessage('1a2345')
+    print(cipherText)
+    plainText = test.decryptMessage(cipherText)
+    print(plainText)
 
 if __name__ == '__main__':
     main()
