@@ -121,7 +121,7 @@ class Blowfish:
         colIndex = 0
         rObfuscated = '';
         for x in range (len(self.__sBoxes[0])):
-            for y in range (len(self.__sBoxes[1])):
+            for y in range (len(self.__sBoxes[1][0])):
                 if self.__sBoxes[boxNum][x][y] == binaryMessageChunk:
                      rowIndex = x
                      colIndex = y
