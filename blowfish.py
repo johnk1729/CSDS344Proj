@@ -119,15 +119,16 @@ class Blowfish:
         # go to self.__subboxes, 3D array, 1st number is box number, 2nd number is x axis, 3rd number is y axis
         rowIndex = 0
         colIndex = 0
+        rObfuscated = '';
         for x in range (len(self.__sBoxes[0])):
             for y in range (len(self.__sBoxes[1])):
                 if self.__sBoxes[boxNum][x][y] == binaryMessageChunk:
                      rowIndex = x
                      colIndex = y
-        binaryMessageChunk[0:2] = x[0:2];
-        binaryMessageChunk[2:7] = y;
-        binaryMessageChunk[7:] = x[7];
-        return binaryMessageChunk
+        rObfuscated.append(str(x[0:2]))
+        rObfuscated.append(str(y))
+        rObfuscated.append(str(x[7]))
+        return rObfuscated
     
     
     
