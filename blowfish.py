@@ -114,8 +114,24 @@ class Blowfish:
         yAxis = self.binaryToDecimal(binaryMessageChunk[0:2]+binaryMessageChunk[7:])
         return self.subBoxLookup(boxNum, xAxis, yAxis)
     
+    #Reverses obfuscation. Go through s-box, locate 8 bits and return another 8 bits from indices
+    def reverseObfuscate(self, boxNum, binaryMessageChunk):
+        # go to self.__subboxes, 3D array, 1st number is box number, 2nd number is x axis, 3rd number is y axis
+        rowIndex = 0
+        colIndex = 0
+        for x in range (len(self.__sBoxes[0])):
+            for y in range (len(self.__sBoxes[1])):
+                if self.__sBoxes[boxNum][x][y] == binaryMessageChunk:
+                     rowIndex = x
+                     colIndex = y
+        binaryMessageChunk[0:2] = x[0:2];
+        binaryMessageChunk[2:7] = y;
+        binaryMessageChunk[7:] = x[7];
+        return binaryMessageChunk
     
-    #Performs f Function on a hexadecimal message block as string
+    
+    
+    #Performs f Function on a hexadecimal message block as string using the encryption version of s box obfuscation
     def fFunction(self, messageBlock):
         cipherText = ''
         index = 0
@@ -130,6 +146,26 @@ class Blowfish:
             start = index
             index += 8
             substitutions.append(self.subBoxObfuscation(int(start/8), binaryMessageBlock[start:index]))
+        firstAdd = self.hexAddLimit2ToThe32(substitutions[0], substitutions[1])
+        xor = self.hexToDecimal(firstAdd) ^ self.hexToDecimal(substitutions[2])
+        secondAdd = self.hexAddLimit2ToThe32(substitutions[3], self.decimalToHex(xor))
+        return secondAdd
+    
+     #Performs f Function on a hexadecimal message block as string using the decryption version of s box obfuscation
+    def decryptionfFunction(self, messageBlock):
+        cipherText = ''
+        index = 0
+        substitutions = []
+        binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 32)
+        
+        if len(binaryMessageBlock) != 32:
+            print('Error: Blowfish::fFunction given messageBlock wrong size')
+            return
+        
+        while index < 32:
+            start = index
+            index += 8
+            substitutions.append(self.reverseObfuscation(int(start/8), binaryMessageBlock[start:index]))
         firstAdd = self.hexAddLimit2ToThe32(substitutions[0], substitutions[1])
         xor = self.hexToDecimal(firstAdd) ^ self.hexToDecimal(substitutions[2])
         secondAdd = self.hexAddLimit2ToThe32(substitutions[3], self.decimalToHex(xor))
@@ -151,8 +187,9 @@ class Blowfish:
     def encryptionPostProcessing(self, messageBlock):
         binaryMessageBlock = self.addLeadingBinaryZeros(self.hexToBinary(messageBlock), 64)
         halfBlockSize = int(len(binaryMessageBlock)/2)
-        
-        return (self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[16])) + self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[17])))
+        left = self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[halfBlockSize:]) ^ self.hexToDecimal(self.__subKeys[16]))
+        right = self.decimalToHex(self.binaryToDecimal(binaryMessageBlock[0:halfBlockSize]) ^ self.hexToDecimal(self.__subKeys[17]))
+        return (left + right)
     
     def encryptPiece(self, messageChunk):
         message = messageChunk
