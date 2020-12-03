@@ -5,6 +5,7 @@ import os
 import file_to_hex_letters
 import binascii
 import RSA, RSA2
+import pickle
 
 # TODO: Restrict inputs to only valid characters
 
@@ -221,20 +222,7 @@ rsa_keygen_tab = [
                 ],
             ]
         ),
-        sg.Column(
-            [
-                [sg.Text("Modulus (N):")],
-                [
-                    sg.Multiline(
-                        "(output will appear here)",
-                        size=(10, 5),
-                        key="rsa_keygen_output_n",
-                        visible=True,
-                        disabled=True,
-                    )
-                ],
-            ]
-        ),
+
         sg.Column(
             [
                 [sg.Text("Public Exponent (E):")],
@@ -263,7 +251,21 @@ rsa_keygen_tab = [
                 ],
             ]
         ),
-        sg.Button("Generate Keys", key="rsa_keygen_button"),
+        sg.Column(
+            [
+                [sg.Text("Modulus (N):")],
+                [
+                    sg.Multiline(
+                        "(output will appear here)",
+                        size=(10, 5),
+                        key="rsa_keygen_output_n",
+                        visible=True,
+                        disabled=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Button("Generate Keys", key="rsa_keygen_button", size=(25,1))
     ]
 ]
 
@@ -417,7 +419,7 @@ vigenere_encrypt_file_tab = [
         ),
         sg.Column(
             [
-                [sg.Text(f"NOTE: Blowfish file encryption is slow and should only be used with very small files.\nEncrypted file will be in the same folder with 've' appended to the extension.",  size=(30,5), key="vigenere_encrypt_file_output_message")],
+                [sg.Text(f"Encrypted file will be in the same folder with 've' appended to the extension.",  size=(30,5), key="vigenere_encrypt_file_output_message")],
 
             ]
         ),
@@ -486,7 +488,7 @@ blowfish_encrypt_file_tab = [
         ),
         sg.Column(
             [
-                [sg.Text(f"Encrypted file will be in the same folder with 'be' appended to the extension.",  size=(30,5), key="blowfish_encrypt_file_output_message")],
+                [sg.Text(f"NOTE: Blowfish file encryption is slow and should only be used with very small files.\nEncrypted file will be in the same folder with 'be' appended to the extension.",  size=(30,5), key="blowfish_encrypt_file_output_message")],
             ]
         ),
         sg.Button("Encrypt", key="blowfish_encrypt_file_button"),
@@ -497,7 +499,7 @@ blowfish_decrypt_file_tab = [
     [
         sg.Column(
             [
-                [sg.T("File to encrypt:")],
+                [sg.T("File to decrypt:")],
 
                 [
                     sg.InputText(key="blowfish_decrypt_file_path"),
@@ -527,8 +529,102 @@ blowfish_decrypt_file_tab = [
     ]
 ]
 
+rsa_encrypt_file_tab = [
+    [
+        sg.Column(
+            [
+                [sg.T("File to encrypt:")],
 
+                [
+                    sg.InputText(key="rsa_encrypt_file_path"),
+                    sg.FileBrowse(key="rsa_encrypt_file_selector", enable_events=True)
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Public Exponent (E):")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(10, 5),
+                        key="rsa_encrypt_file_e",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Modulus (N):")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(10, 5),
+                        key="rsa_encrypt_file_n",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
 
+        sg.Column(
+            [
+                [sg.Text(f"Encrypted file will be in the same folder with 're' appended to the extension.",
+                         size=(30, 5), key="rsa_encrypt_file_output_message")],
+
+            ]
+        ),
+        sg.Button("Encrypt", key="rsa_encrypt_file_button"),
+    ]
+]
+
+rsa_decrypt_file_tab = [
+    [
+            sg.Column(
+            [
+                [sg.T("File to decrypt:")],
+
+                [
+                    sg.InputText(key="rsa_decrypt_file_path"),
+                    sg.FileBrowse(key="rsa_decrypt_file_selector", enable_events=True)
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Private Exponent (D):")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(10, 5),
+                        key="rsa_decrypt_file_d",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.T("Modulus (N):")],
+                [
+                    sg.Multiline(
+                        "",
+                        size=(10, 5),
+                        key="rsa_decrypt_file_n",
+                        visible=True,
+                    )
+                ],
+            ]
+        ),
+        sg.Column(
+            [
+                [sg.Text(f"Decrypted file will be in the same folder with 're' removed from the extension (so they will have the original extension).",  size=(30,5), key="rsa_decrypt_file_output_message")],
+            ]
+        ),
+        sg.Button("Decrypt", key="rsa_decrypt_file_button"),
+    ]
+]
 
 # Define the elements (tab groups) that will go in the main window:
 layout = [
@@ -550,6 +646,10 @@ layout = [
                         sg.Tab("RSA Keygen", rsa_keygen_tab),
                         sg.Tab("RSA Encrypt", rsa_encrypt_tab),
                         sg.Tab("RSA Decrypt", rsa_decrypt_tab),
+
+                        sg.Tab("RSA Encrypt (file)", rsa_encrypt_file_tab),
+                        sg.Tab("RSA Decrypt (file)", rsa_decrypt_file_tab),
+
                     ]
                 ]),
 
@@ -635,6 +735,7 @@ while True:
             file_to_hex_letters.convert_letters_string_to_regular_file(decrypted_hex_letters, file_path[:-2])
         except binascii.Error:
             sg.popup("Incorrect key for file.")
+            continue
 
         head, tail = os.path.split(file_path)
         sg.popup(f"Success! Decrypted file saved as {tail[:-2]} in {head}")
@@ -700,6 +801,7 @@ while True:
             file_to_hex_letters.convert_letters_string_to_regular_file(decrypted_hex_letters, file_path[:-2])
         except binascii.Error:
             sg.popup("Incorrect key for file.")
+            continue
 
         head, tail = os.path.split(file_path)
         sg.popup(f"Success! Decrypted file saved as {tail[:-2]} in {head}")
@@ -779,6 +881,76 @@ while True:
 
             sg.popup("Confirm you have used prime inputs")
             continue
+
+
+    if event == "rsa_encrypt_file_button":
+        e = values_dict['rsa_encrypt_file_e'].strip('\n')
+        n = values_dict['rsa_encrypt_file_n'].strip('\n')
+
+        file_path = window["rsa_encrypt_file_path"].get()
+        if len(file_path) < 1:
+            sg.popup("Select a file to encrypt first.")
+            continue
+
+        if not n.isdigit():
+            sg.popup("N should be an integer")
+            continue
+        n = int(n)
+        if not e.isdigit():
+            sg.popup("E should be an integer")
+            continue
+        e = int(e)
+
+
+        try:
+            file_encrypted_hex_letters = RSA2.encrypt(n, e, file_to_hex_letters.convert_to_hex_letters(file_path))
+        except ValueError as e:
+            sg.popup(f"Error:\n{e}")
+            continue
+
+        pickle.dump(file_encrypted_hex_letters, open(file_path + "re","wb+"))
+
+        head, tail = os.path.split(file_path)
+        sg.popup(f"Success! Encrypted file saved as {tail}re in {head}")
+
+    if event == "rsa_decrypt_file_button":
+        n = values_dict['rsa_decrypt_file_n'].strip('\n')
+        d = values_dict['rsa_decrypt_file_d'].strip('\n')
+
+        if not n.isdigit():
+            sg.popup("N should be an integer")
+            continue
+        n = int(n)
+        if not d.isdigit():
+            sg.popup("D should be an integer")
+            continue
+        d = int(d)
+
+
+        file_path = window["rsa_decrypt_file_path"].get()
+        if len(file_path) < 1:
+            sg.popup("Select a file to decrypt first.")
+            continue
+
+        if file_path[-2:] != "re":
+            sg.popup("Please select an rsa-encrypted file with 're' at the end of it's extension.")
+            continue
+
+        #encrypted_letters_string = file_to_hex_letters.file_to_string(file_path)
+        #to_decrypt_list = encrypted_letters_string
+        try:
+            to_decrypt_text = pickle.load(open(file_path, "rb"))
+            decrypted_hex_letters = RSA2.decrypt(n, d, to_decrypt_text)
+            file_to_hex_letters.convert_letters_string_to_regular_file(decrypted_hex_letters, file_path[:-2])
+        except:
+            sg.popup("Error decrypting. Are you sure the key is correct?")
+            continue
+
+        head, tail = os.path.split(file_path)
+        sg.popup(f"Success! Decrypted file saved as {tail[:-2]} in {head}")
+        pass
+
+
 
 
 window.close()
