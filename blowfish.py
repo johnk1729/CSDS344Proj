@@ -121,13 +121,13 @@ class Blowfish:
         colIndex = 0
         rObfuscated = '';
         for x in range (len(self.__sBoxes[0])):
-            for y in range (len(self.__sBoxes[1][0])):
+            for y in range (len(self.__sBoxes[0][0])):
                 if self.__sBoxes[boxNum][x][y] == binaryMessageChunk:
-                     rowIndex = x
-                     colIndex = y
-        rObfuscated+=str(rowIndex[0:2])
-        rObfuscated+=str(colIndex)
-        rObfuscated+=str(rowIndex[7])
+                     rowIndex = str(self.addLeadingBinaryZeros(self.decimalToBinary(x), 3))
+                     colIndex = str(self.addLeadingBinaryZeros(self.decimalToBinary(y), 5))
+        rObfuscated+=rowIndex[0:2]
+        rObfuscated+=colIndex
+        rObfuscated+=rowIndex[3:]
         return rObfuscated
     
     
@@ -272,7 +272,7 @@ def main():
     test = Blowfish('12345')
     ob = test.subBoxObfuscation(2, "10010110")
     print(ob)
-    print(test.reverseObfuscate(2, ob))
+    print((test.reverseObfuscate(2, ob)))
     #cipherText = test.encryptMessage('1a2345')
     #print(cipherText)
     #plainText = test.decryptMessage(cipherText)
