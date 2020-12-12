@@ -55,10 +55,6 @@ class Blowfish:
     def hexAddLimit2ToThe32(self, hexNum1, hexNum2):
         return self.decimalToHex((self.hexToDecimal(hexNum1)+self.hexToDecimal(hexNum2))%(2**32))
     
-    #TODO: Remove this 
-    def getSubKeys(self):
-        return self.__subKeys
-    
     
     def addLeadingBinaryZeros(self, binaryValue, length):
         value = binaryValue
@@ -268,14 +264,14 @@ class Blowfish:
 # For testing purposes:
 def main():
     test = Blowfish('12345')
-    #ob = test.subBoxObfuscation(2, "10010110")
-    #print('10010110')
-    #print(ob)
-    #print((test.reverseObfuscate(2, ob)))
-    cipherText = test.encryptMessage('1a2345')
-    print(cipherText)
-    plainText = test.decryptMessage(cipherText)
-    print(plainText)
+    temp = '10110110'
+    ob = test.subBoxObfuscation(2, temp)
+    print(temp)
+    print((test.reverseObfuscate(2, ob)))
+    #cipherText = test.encryptMessage('1a2345')
+    #print(cipherText)
+    #plainText = test.decryptMessage(cipherText)
+    #print(plainText)
 
 if __name__ == '__main__':
     main()
